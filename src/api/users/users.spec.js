@@ -5,8 +5,11 @@ const db = require('../../db/db-config');
 
 describe('server endpoints', () => {
   beforeEach(async () => {
-    // empty the table and reset primary key back to 1
     await db('users').truncate();
+    await request(server).post('/users').send({
+      username: 'markusa',
+      password: 'secretpassword',
+    });
   });
 
   describe('POST /users', () => {
@@ -18,7 +21,7 @@ describe('server endpoints', () => {
 
       const users = await db('users');
 
-      expect(users).toHaveLength(1);
+      expect(users).toHaveLength(2);
     });
 
     it('should return a 200 OK', async () => {
@@ -31,6 +34,26 @@ describe('server endpoints', () => {
         .then((res) => {
           expect(res.status).toBe(201);
         });
+    });
+  });
+
+  describe('DELETE /users/:id', () => {
+    it('should delete user from /users/:id', async () => {
+      await request(server)
+        .delete('/users/1')
+        .then((res) => {
+          expect(res.status).toBe(204);
+        });
+    });
+
+    it('should return content type of json', async () => {
+      await request(server)
+        .post('/users')
+        .send({
+          username: 'timoshka',
+          password: 'secretpassword',
+        })
+        .expect('Content-Type', /json/i);
     });
   });
 });
