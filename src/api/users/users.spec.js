@@ -25,25 +25,20 @@ describe('server endpoints', () => {
     });
 
     it('should return a 200 OK', async () => {
-      await request(server)
-        .post('/users')
-        .send({
-          username: 'timbogdanov',
-          password: 'secretpassword',
-        })
-        .then((res) => {
-          expect(res.status).toBe(201);
-        });
+      const res = await request(server).post('/users').send({
+        username: 'timbogdanov',
+        password: 'secretpassword',
+      });
+
+      expect(res.status).toBe(201);
     });
   });
 
   describe('DELETE /users/:id', () => {
     it('should delete user from /users/:id', async () => {
-      await request(server)
-        .delete('/users/1')
-        .then((res) => {
-          expect(res.status).toBe(204);
-        });
+      const res = await request(server).delete('/users/1');
+
+      expect(res.status).toBe(204);
     });
 
     it('should return content type of json', async () => {
